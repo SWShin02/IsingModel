@@ -73,7 +73,7 @@ group_name = datetime.datetime.now().strftime("%Y%m%d%H%M")
 
 with h5py.File("Ising2D.h5", "a") as f:
     group = f.create_group(group_name)
-    group.create_dataset("magnetization", data=magnetization)
+    group.create_dataset("magnetization", data=magnetization, compression='gzip')
     group.create_dataset("temperature", data=T_array)
 
 #endregion
