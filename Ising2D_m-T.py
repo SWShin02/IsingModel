@@ -1,6 +1,9 @@
 import numpy as np
 import numpy.random as nr
 
+from modules.initialize import cold_start, hot_start
+from modules.simulation import should_accept
+
 ###################################################################
 #region Params
 ###################################################################
@@ -14,47 +17,6 @@ iterations = int(1e5)
 repetition = 100
 
 start_sampling_idx = int(2e4)
-
-#endregion
-###################################################################
-#region Define functions
-###################################################################
-
-def compute_DeltaE(spin_field:np.ndarray, flip_idx:int)-> float:
-    """
-    ## input variables
-    `spin_field`: Entire spin field of the system with PBC. \\
-    `flip_idx`: Index of the point where you want to flip the spin.
-    ---
-    ## return
-    `DeltaE`: Energy difference between before flip and after flip.
-    """
-    x:int = flip_idx % N_lat
-    y:int = flip_idx // N_lat
-
-    sum_spin_neighbor = (
-        spin_field[(x+1)%N_lat][y] 
-        + spin_field[x][(y+1)%N_lat] 
-        + spin_field[x-1][y] 
-        + spin_field[x][y-1]
-    )
-    
-    return  2 * (J * sum_spin_neighbor + H) * spin_field[x][y]
-
-def should_accept(spin_field:np.ndarray, flip_idx:int, T:float)-> bool:
-    DeltaE = compute_DeltaE(spin_field, flip_idx)
-    if DeltaE < 0: return True
-    else:
-        P = np.exp(-DeltaE/T)
-        dice = nr.uniform()
-        if dice < P: return True
-        else: return False
-
-def cold_start(shape)-> np.ndarray:
-    return np.ones(shape=shape)
-
-def hot_start(shape)-> np.ndarray:
-    return nr.randint(2, size=shape)*2 - 1
 
 #endregion
 ###################################################################
@@ -90,9 +52,9 @@ for i, T in enumerate(T_array):
 
         for k in range(iterations):
             flip_idx = nr.randint(0, N_points)
-            if should_accept(spin_field, flip_idx, T):
+            if should_accept(spin_field, flip_idx, T, N_lat, J, H):
                 spin_field[x_array[flip_idx]][y_array[flip_idx]] *= -1
-            
+
             m_tmp[j][k] = spin_field.mean()
 
     m_temperature[i] = np.abs(m_tmp[:,start_sampling_idx:]).mean()
