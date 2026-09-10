@@ -1,8 +1,0 @@
-{
-  "env": {
-    "PATH": "/home/seungwoo/.conda/envs/CM/bin:/home/seungwoo/.local/bin:/home/seungwoo/.npm-global/bin:/home/seungwoo/.miniconda3/bin:/home/seungwoo/.miniconda3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-    "CONDA_DEFAULT_ENV": "CM",
-    "CONDA_PREFIX": "/home/seungwoo/.conda/envs/CM",
-    "CONDA_PROMPT_MODIFIER": "(CM) "
-  }
-}
